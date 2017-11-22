@@ -1,0 +1,52 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+<head>
+    <title>Weblink 2.0</title>
+    <link href="css/design.css" rel="stylesheet">
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    <link href="css/jquery-ui.theme.css" rel="stylesheet">
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/jquery-ui.min.js"></script>
+    <script src="lib/tko.js"></script>
+    <script src="js/popup.js"></script>
+</head>
+
+<body>
+<div id="tabs" class="ui-tabs">
+    <ul class="ui-tabs-nav">
+        <li><a href="#tabs-get">Get</a></li>
+        <li><a href="#tabs-add">Add</a></li>
+    </ul>
+    <div id="tabs-get">
+        <p>
+        <ul id="endpointlist">
+
+        </ul>
+        </p>
+    </div>
+    <div id="tabs-add">
+        <!--<div id="dialog-form" title="Create new user">
+            <div class="endpoint-def">
+                <input title="uri" class="uri" type="text" data-bind="textInput: endpoint().uri()">
+                <select title="direction" class="direction" data-bind="options: directions"></select>
+            </div>
+        </div> -->
+        <div id="dialog-form" title="Create new user" data-bind="foreach: endpoints">
+            <div class="endpoint-def">
+                <input title="uri" class="uri ui-corner-all ui-widget-content" type="text" data-bind="textInput: uri">
+                <select title="direction" class="direction ui-corner-all ui-widget-content" data-bind="options: $parent.directions, value: direction"></select>
+            </div>
+        </div>
+        <button id="addEp" class="ui-button ui-widget ui-corner-all" type="button" data-bind="click: addEp">+</button>
+        <button id="rmEp" class="ui-button ui-widget ui-corner-all" type="button" data-bind="click: rmEp, enable: endpoints().length > 2, css: {ui-state-disabled : endpoints().length <= 2}">-</button>
+        <button id="postLink" class="right ui-button ui-widget ui-corner-all" data-bind="click: submit">Submit</button>
+    </div>
+</div>
+
+</body>
+</html>

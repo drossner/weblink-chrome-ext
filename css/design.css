@@ -1,0 +1,32 @@
+
+body {
+    margin: 0px;
+    width: 500px;
+}
+
+.right {
+    float: right;
+}
+
+.endpoint-def input {
+    padding: 8px 15px;
+    margin: 5px 0;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.endpoint-def select {
+    padding: 8px 15px;
+    margin: 5px 0;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.endpoint-def input.uri {
+    width: 300px;
+}
+
+.endpoint-def select.direction {
+    width: 150px;
+}
+
