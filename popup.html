@@ -17,25 +17,26 @@
 </head>
 
 <body>
+<!-- TAB ELEMENT -->
 <div id="tabs" class="ui-tabs">
     <ul class="ui-tabs-nav">
         <li><a href="#tabs-get">Get</a></li>
         <li><a href="#tabs-add">Add</a></li>
     </ul>
-    <div id="tabs-get">
-        <p>
-        <ul id="endpointlist">
 
-        </ul>
-        </p>
+    <!-- GET TAB -->
+    <div id="tabs-get">
+
+        <div id="overview" title="Link-Overview" data-bind="foreach: links">
+            <p>Link ID: <b data-bind="text: id"></b> </p>
+            <ul class="linkrep" data-bind="foreach: endpoints">
+                <li><i data-bind="text: direction"></i><a data-bind="attr: { href: uri }, text: uri" target="_blank"></a></li>
+            </ul>
+        </div>
     </div>
+
+    <!-- ADD TAB -->
     <div id="tabs-add">
-        <!--<div id="dialog-form" title="Create new user">
-            <div class="endpoint-def">
-                <input title="uri" class="uri" type="text" data-bind="textInput: endpoint().uri()">
-                <select title="direction" class="direction" data-bind="options: directions"></select>
-            </div>
-        </div> -->
         <div id="dialog-form" title="Create new user" data-bind="foreach: endpoints">
             <div class="endpoint-def">
                 <input title="uri" class="uri ui-corner-all ui-widget-content" type="text" data-bind="textInput: uri">
@@ -46,6 +47,8 @@
         <button id="rmEp" class="ui-button ui-widget ui-corner-all" type="button" data-bind="click: rmEp, enable: endpoints().length > 2, css: {ui-state-disabled : endpoints().length <= 2}">-</button>
         <button id="postLink" class="right ui-button ui-widget ui-corner-all" data-bind="click: submit">Submit</button>
     </div>
+
+
 </div>
 
 </body>

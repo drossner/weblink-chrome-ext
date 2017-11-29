@@ -1,5 +1,5 @@
 
-var currentLinkList;
+var currentLinkList = [];
 var currentUrl;
 
 /**
@@ -25,10 +25,23 @@ function getCurrentTabUrl(callback) {
 }
 
 function getEndpointsFor(uri) {
-    if(uri !== null && uri !== "")
-    fetch("http://localhost:8080/links", {mode: 'cors'}).then((response) => {
+    if(uri === undefined && uri === null && uri === '') return;
+    fetch("http://localhost:8080/findlinks", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+            component_uri: uri,
+            all_anchors: true,
+            directions: ['FROM', 'BIDIRECTIONAL', 'TO']
+        })
+    }).then((response) => {
         response.json().then((data) => {
             currentLinkList = data;
+            currentUrl = uri;
             setBadgeNumber(currentLinkList.length);
         });
     })
@@ -52,7 +65,7 @@ function setBadgeNumber(text) {
 
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) =>{
         clearBadge();
-        getEndpointsFor(changeInfo.url);
+        getEndpointsFor(tab.url);
     });
 
     chrome.tabs.onActivated.addListener((activeInfo) =>{
