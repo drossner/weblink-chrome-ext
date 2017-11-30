@@ -2,8 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $("#tabs").tabs();
 
-    ko.applyBindings(new LinkOverviewModel(true), document.getElementById('tabs-get'));
-    ko.applyBindings(new AddLinkModel(), document.getElementById('tabs-add'));
+    ko.applyBindings(linkOverview, document.getElementById('tabs-get'));
+    ko.applyBindings(inspectLink, document.getElementById('tabs-inspect'));
+    ko.applyBindings(addLink, document.getElementById('tabs-add'));
 });
 
 /*
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let LinkModel = function () {
     let self = this;
+    self.directions = ko.observableArray(['TO', 'FROM', 'BIDIRECTIONAL']);
     self.id = ko.observable();
     self.endpoints = ko.observableArray();
 
@@ -21,6 +23,16 @@ let LinkModel = function () {
 
     self.setId = function (id) {
         self.id(id);
+    };
+
+    self.addEp = function () {
+        self.endpoints.push(new EndpointModel('', self.directions()[0]));
+    };
+
+    self.rmEp = function () {
+        if(self.endpoints().length > 2){
+            self.endpoints.pop();
+        }
     };
 };
 
@@ -33,6 +45,12 @@ let EndpointModel = function (uri, direction) {
 let LinkOverviewModel = function (init) {
     let self = this;
     self.links = ko.observableArray();
+
+    self.inspect = function (context) {
+        inspectLink.linkUri(context.id());
+        inspectLink.loadLink();
+        $( "#tabs" ).tabs({ active: 2 });
+    };
 
     if (init) {
         let facade = chrome.extension.getBackgroundPage().currentLinkList;
@@ -49,6 +67,33 @@ let LinkOverviewModel = function (init) {
             }
             self.links.push(link);
         }
+    }
+};
+
+let InspectLinkModel = function () {
+
+    let self = this;
+    self.empty = ko.observable(true);
+    self.linkUri = ko.observable();
+    self.link = ko.observable(null);
+
+    self.loadLink = function () {
+        self.inspect(self.linkUri());
+        self.empty(false);
+    };
+
+    self.inspect = function (uri) {
+        fetch(uri).then((response) => {
+            response.json().then((data) => {
+                let link = new LinkModel();
+                link.setId(uri);
+                let eps = data.endpoints;
+                for(let i = 0, j = eps.length; i < j; i++){
+                    link.addEndpoint(new EndpointModel(eps[i].uri, eps[i].direction));
+                }
+                self.link(link);
+            });
+        })
     }
 };
 
@@ -106,6 +151,11 @@ let AddLinkModel = function () {
     };
 
     self.toDefault();
-
 };
+
+//define 'global' viewmodels
+
+let linkOverview = new LinkOverviewModel(true);
+let inspectLink = new InspectLinkModel();
+let addLink = new AddLinkModel();
 

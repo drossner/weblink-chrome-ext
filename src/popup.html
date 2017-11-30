@@ -22,13 +22,14 @@
     <ul class="ui-tabs-nav">
         <li><a href="#tabs-get">Get</a></li>
         <li><a href="#tabs-add">Add</a></li>
+        <li><a href="#tabs-inspect">Inspect</a></li>
     </ul>
 
     <!-- GET TAB -->
     <div id="tabs-get">
 
         <div id="overview" title="Link-Overview" data-bind="foreach: links">
-            <p>Link ID: <b data-bind="text: id"></b> </p>
+            <p>Link ID: <b><a href="#tabs-inspect" data-bind="click: $parent.inspect, text: id"></a></b> </p>
             <ul class="linkrep" data-bind="foreach: endpoints">
                 <li><i data-bind="text: direction"></i><a data-bind="attr: { href: uri }, text: uri" target="_blank"></a></li>
             </ul>
@@ -48,6 +49,26 @@
         <button id="postLink" class="right ui-button ui-widget ui-corner-all" data-bind="click: submit">Submit</button>
     </div>
 
+    <!-- INSPECT TAB -->
+    <div id="tabs-inspect">
+        <div data-bind="visible: empty">
+            <input title="link uri" class="uri ui-corner-all ui-widget-content" type="text" data-bind="textInput: linkUri">
+            <button class="right ui-button ui-widget ui-corner-all" data-bind="click: loadLink">Load</button>
+        </div>
+        <div data-bind="visible: !empty(), with: link">
+            <div data-bind="foreach: endpoints">
+                <div class="endpoint-def">
+                    <input title="uri" class="uri ui-corner-all ui-widget-content" type="text" data-bind="textInput: uri">
+                    <select title="direction" class="direction ui-corner-all ui-widget-content" data-bind="options: $parent.directions, value: direction"></select>
+                </div>
+            </div>
+            <button class="ui-button ui-widget ui-corner-all" type="button" data-bind="click: addEp">+</button>
+            <button class="ui-button ui-widget ui-corner-all" type="button"
+                    data-bind="click: rmEp, enable: endpoints().length > 2, css: {ui-state-disabled : endpoints().length <= 2}">-</button>
+            <button class="right ui-button ui-widget ui-corner-all">Update</button>
+        </div>
+
+    </div>
 
 </div>
 

@@ -2,31 +2,32 @@
 body {
     margin: 0px;
     width: 500px;
+    font-size: 75%; /* chrome does this implicit, firefox not */
 }
 
 .right {
     float: right;
 }
 
-.endpoint-def input {
+input {
     padding: 8px 15px;
     margin: 5px 0;
     display: inline-block;
     box-sizing: border-box;
 }
 
-.endpoint-def select {
+select {
     padding: 8px 15px;
     margin: 5px 0;
     display: inline-block;
     box-sizing: border-box;
 }
 
-.endpoint-def input.uri {
+input.uri {
     width: 300px;
 }
 
-.endpoint-def select.direction {
+select.direction {
     width: 150px;
 }
 
