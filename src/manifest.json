@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Weblink2.0",
-  "description": "Link link and link links with all and links",
+  "name": "Weblink",
+  "description": "Connects to a local linkbase and offers easy interaction",
   "version": "1.0",
 
   "browser_action": {
