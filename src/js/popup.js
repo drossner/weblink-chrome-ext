@@ -30,7 +30,7 @@ let LinkModel = function () {
     };
 
     self.rmEp = function () {
-        if(self.endpoints().length > 2){
+        if (self.endpoints().length > 2) {
             self.endpoints.pop();
         }
     };
@@ -49,10 +49,11 @@ let LinkOverviewModel = function (init) {
     self.inspect = function (context) {
         inspectLink.linkUri(context.id());
         inspectLink.loadLink();
-        $( "#tabs" ).tabs({ active: 2 });
+        $("#tabs").tabs({active: 2});
     };
 
-    if (init) {
+    self.update = function () {
+        self.links.removeAll();
         let facade = chrome.extension.getBackgroundPage().currentLinkList;
         for (let i = 0, j = facade.length; i < j; i++) {
             let eps = facade[i].endpoints;
@@ -67,6 +68,10 @@ let LinkOverviewModel = function (init) {
             }
             self.links.push(link);
         }
+    };
+
+    if (init) {
+        self.update();
     }
 };
 
@@ -82,13 +87,65 @@ let InspectLinkModel = function () {
         self.empty(false);
     };
 
+    self.delete = function () {
+        fetch(self.linkUri(), {
+            method: "DELETE",
+        })
+            .then((response) => {
+                if (response.ok) {
+                    $("#tabs").tabs({active: 0});
+                    self.close();
+                    chrome.runtime.sendMessage({}, function(response) {
+                        linkOverview.update();
+                    });
+                } else {
+                    $('#inspect-form').effect('shake');
+                }
+            });
+    };
+
+    self.close = function () {
+        self.empty(true);
+        self.linkUri('');
+        self.link(null);
+    };
+
+    self.update = function () {
+        let jsonlink = {endpoints: []};
+
+        for(let i = 0, j = self.link().endpoints().length; i < j; i++){
+            let tmp = self.link().endpoints()[i];
+            jsonlink.endpoints.push({uri: tmp.uri(), direction: tmp.direction()});
+        }
+
+        fetch(self.linkUri(), {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(jsonlink)
+        })
+            .then((response) => {
+                if (response.ok) {
+                    $('#tabs-inspect').effect('highlight', {color: '#1aad35'});
+                    chrome.runtime.sendMessage({}, function(response) {
+                        linkOverview.update();
+                    });
+                } else {
+                    $('#inspect-form').effect('shake');
+                }
+            });
+    };
+
     self.inspect = function (uri) {
         fetch(uri).then((response) => {
             response.json().then((data) => {
                 let link = new LinkModel();
                 link.setId(uri);
                 let eps = data.endpoints;
-                for(let i = 0, j = eps.length; i < j; i++){
+                for (let i = 0, j = eps.length; i < j; i++) {
                     link.addEndpoint(new EndpointModel(eps[i].uri, eps[i].direction));
                 }
                 self.link(link);
@@ -144,6 +201,9 @@ let AddLinkModel = function () {
                 if (response.ok) {
                     self.toDefault();
                     $('#tabs-add').effect('highlight', {color: '#1aad35'});
+                    chrome.runtime.sendMessage({}, function(response) {
+                        linkOverview.update();
+                    });
                 } else {
                     $('#dialog-form').effect('shake');
                 }

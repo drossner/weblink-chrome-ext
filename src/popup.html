@@ -55,7 +55,7 @@
             <input title="link uri" class="uri ui-corner-all ui-widget-content" type="text" data-bind="textInput: linkUri">
             <button class="right ui-button ui-widget ui-corner-all" data-bind="click: loadLink">Load</button>
         </div>
-        <div data-bind="visible: !empty(), with: link">
+        <div id="inspect-form" data-bind="visible: !empty(), with: link">
             <div data-bind="foreach: endpoints">
                 <div class="endpoint-def">
                     <input title="uri" class="uri ui-corner-all ui-widget-content" type="text" data-bind="textInput: uri">
@@ -65,7 +65,9 @@
             <button class="ui-button ui-widget ui-corner-all" type="button" data-bind="click: addEp">+</button>
             <button class="ui-button ui-widget ui-corner-all" type="button"
                     data-bind="click: rmEp, enable: endpoints().length > 2, css: {ui-state-disabled : endpoints().length <= 2}">-</button>
-            <button class="right ui-button ui-widget ui-corner-all">Update</button>
+            <button class="right ui-button ui-widget ui-corner-all" data-bind="click: $parent.update">Update</button>
+            <button class="right ui-button ui-widget ui-corner-all" data-bind="click: $parent.delete">Delete</button>
+            <button class="right ui-button ui-widget ui-corner-all" data-bind="click: $parent.close">Close</button>
         </div>
 
     </div>

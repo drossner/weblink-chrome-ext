@@ -24,7 +24,7 @@ function getCurrentTabUrl(callback) {
     });
 }
 
-function getEndpointsFor(uri) {
+function getEndpointsFor(uri, callback) {
     if(uri === undefined && uri === null && uri === '') return;
     fetch("http://localhost:8080/findlinks", {
         method: "POST",
@@ -43,6 +43,7 @@ function getEndpointsFor(uri) {
             currentLinkList = data;
             currentUrl = uri;
             setBadgeNumber(currentLinkList.length);
+            if(callback !== undefined) callback({});
         });
     })
 }
@@ -72,5 +73,11 @@ function setBadgeNumber(text) {
         clearBadge();
         getCurrentTabUrl(getEndpointsFor);
     });
+
+    chrome.runtime.onMessage.addListener(function (msg, sender, respond) {
+        getEndpointsFor(currentUrl, respond);
+        return true;
+    });
+
 
 })();
