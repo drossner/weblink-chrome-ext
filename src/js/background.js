@@ -1,6 +1,7 @@
 
 var currentLinkList = [];
 var currentUrl;
+var apibase;
 
 /**
  * Get the current URL.
@@ -26,7 +27,7 @@ function getCurrentTabUrl(callback) {
 
 function getEndpointsFor(uri, callback) {
     if(uri === undefined && uri === null && uri === '') return;
-    fetch("http://localhost:8080/findlinks", {
+    fetch(apibase+"/findlinks", {
         method: "POST",
         headers: {
             'Accept': 'application/json',
@@ -35,7 +36,7 @@ function getEndpointsFor(uri, callback) {
 
         body: JSON.stringify({
             component_uri: uri,
-            all_anchors: true,
+            all_anchors: false,
             directions: ['FROM', 'BIDIRECTIONAL', 'TO']
         })
     }).then((response) => {
@@ -63,6 +64,18 @@ function setBadgeNumber(text) {
 })();
 
 (function (){
+    chrome.storage.onChanged.addListener(function (changes, areaName) {
+        console.log(changes);
+        if(changes.apibase !== undefined) apibase = changes.apibase.newValue;
+    });
+
+    chrome.storage.local.get('apibase', function (item) {
+        if(item.apibase !== undefined) apibase = item.apibase;
+        else{
+            apibase = 'http://localhost:8080';
+            chrome.storage.local.set({apibase: apibase});
+        }
+    });
 
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) =>{
         clearBadge();

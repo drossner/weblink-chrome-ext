@@ -175,7 +175,7 @@ let AddLinkModel = function () {
             direction: ko.observable(self.directions()[1])
         });
         self.endpoints.push({
-            uri: ko.observable('https://news.google.com/news/?ned=de&gl=DE&hl=de'),
+            uri: ko.observable('https://www.heise.de/'),
             direction: ko.observable(self.directions()[0])
         });
     };
@@ -188,7 +188,7 @@ let AddLinkModel = function () {
             link.endpoints.push({uri: eps[i].uri(), direction: eps[i].direction()});
         }
 
-        fetch("http://localhost:8080/links", {
+        fetch(chrome.extension.getBackgroundPage().apibase+"/links", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',

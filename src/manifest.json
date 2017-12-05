@@ -3,7 +3,7 @@
 
   "name": "Weblink",
   "description": "Connects to a local linkbase and offers easy interaction",
-  "version": "1.2",
+  "version": "1.3",
 
   "icons": {
     "16":  "images/logo_16.png",
@@ -18,7 +18,12 @@
   "background":{
     "scripts": ["js/background.js"]
   },
+
+  "options_ui": {
+    "page": "options.html"
+  },
+
   "permissions": [
-    "activeTab", "tabs"
+    "activeTab", "tabs", "storage"
   ]
 }
